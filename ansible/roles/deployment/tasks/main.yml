@@ -1,0 +1,22 @@
+---
+    - name: Ensure ~/application exists
+      file:
+        path: "/home/ubuntu/application"
+        state: directory
+        owner: ubuntu
+        group: ubuntu
+        mode: '0755'
+
+    - name: Clone the repository
+      git:
+        repo: "https://github.com/jubriledun/jubriledun_devops-stage4.git"
+        dest: "/home/ubuntu/application"
+        version: "main"
+        accept_hostkey: yes
+      become: true
+      become_user: ubuntu
+
+    - name: Run Docker Compose
+      command: docker-compose up -d
+      args:
+        chdir: "/home/ubuntu/application"

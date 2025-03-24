@@ -1,0 +1,7 @@
+---
+- name: Provision and Deploy Application on AWS EC2
+  hosts: servers
+  become: true
+  roles:
+    - dependencies
+    - deployment
