@@ -1,0 +1,35 @@
+# Ansible Playbook for Server Configuration and Deployment
+
+- hosts: devops
+  become: yes
+  tasks:
+    - name: Install required dependencies
+      apt:
+        name: ["docker.io", "docker-compose", "git"]
+        state: present
+        update_cache: yes
+
+    - name: Clone the application repository
+      git:
+        repo: "https://github.com/your-forked-repo.git"
+        dest: "/home/ubuntu/devops-app"
+
+    - name: Deploy the application using Docker Compose
+      command: "docker-compose -f /home/ubuntu/devops-app/docker-compose.yml up -d"
+
+    - name: Set up Nginx for reverse proxy and SSL
+      block:
+        - name: Install Nginx
+          apt:
+            name: nginx
+            state: present
+
+        - name: Copy Nginx configuration
+          copy:
+            src: "nginx.conf"
+            dest: "/etc/nginx/sites-available/default"
+
+        - name: Restart Nginx
+          service:
+            name: nginx
+            state: restarted
